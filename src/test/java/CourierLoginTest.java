@@ -1,6 +1,7 @@
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import model.CourierModel;
+import org.junit.Before;
 import org.junit.Test;
 
 import static java.net.HttpURLConnection.*;
@@ -11,22 +12,22 @@ import static steps.CourierSteps.courierCreate;
 
 public class CourierLoginTest extends CourierBaseTest {
 
-    @Test
-    @DisplayName("Успешный логин курьера с валидными данными")
-    @Description("Создание курьера и логин с правильными логином и паролем. Ожидается код 200 и наличие поля id.")
-    public void testCourierLoginSuccess() {
-        // Создаем курьера
+    @Before
+    public void setUpCourier() {
         CourierModel courier = new CourierModel(
                 testCourier.getLogin(), testCourier.getPassword(), testCourier.getFirstName()
         );
 
-        // Проверяем создание курьера
         courierCreate(courier)
                 .then()
                 .statusCode(HTTP_CREATED)
                 .body("ok", equalTo(true));
+    }
 
-        // Логинимся с теми же данными
+    @Test
+    @DisplayName("Успешный логин курьера с валидными данными")
+    @Description("Создание курьера и логин с правильными логином и паролем. Ожидается код 200 и наличие поля id.")
+    public void testCourierLoginSuccess() {
         CourierModel loginCourier = CourierModel.withLoginAndPassword(testCourier.getLogin(), testCourier.getPassword());
         courierLogin(loginCourier)
                 .then()
@@ -38,18 +39,6 @@ public class CourierLoginTest extends CourierBaseTest {
     @DisplayName("Ошибка логина курьера с неверным логином")
     @Description("Создание курьера и попытка входа с неправильным логином. Ожидается код 404 и сообщение об отсутствии учётной записи.")
     public void testCourierLoginWrongLoginFailure() {
-        // Создаем курьера
-        CourierModel courier = new CourierModel(
-                testCourier.getLogin(), testCourier.getPassword(), testCourier.getFirstName()
-        );
-
-        // Создаем курьера
-        courierCreate(courier)
-                .then()
-                .statusCode(HTTP_CREATED)
-                .body("ok", equalTo(true));
-
-        // Логинимся с неправильным логином
         CourierModel loginCourier = CourierModel.withLoginAndPassword(testCourier.getLogin() + "1", testCourier.getPassword());
         courierLogin(loginCourier)
                 .then()
@@ -61,18 +50,6 @@ public class CourierLoginTest extends CourierBaseTest {
     @DisplayName("Ошибка логина курьера с неверным паролем")
     @Description("Создание курьера и попытка входа с неправильным паролем. Ожидается код 404 и сообщение об отсутствии учётной записи.")
     public void testCourierLoginWrongPasswordFailure() {
-        // Создаем курьера
-        CourierModel courier = new CourierModel(
-                testCourier.getLogin(), testCourier.getPassword(), testCourier.getFirstName()
-        );
-
-        // Создаем курьера
-        courierCreate(courier)
-                .then()
-                .statusCode(HTTP_CREATED)
-                .body("ok", equalTo(true));
-
-        // Логинимся с неправильным паролем
         CourierModel loginCourier = CourierModel.withLoginAndPassword(testCourier.getLogin(), testCourier.getPassword() + "1");
         courierLogin(loginCourier)
                 .then()
@@ -84,18 +61,6 @@ public class CourierLoginTest extends CourierBaseTest {
     @DisplayName("Ошибка логина курьера без логина")
     @Description("Создание курьера и попытка входа без указания логина. Ожидается код 400 и сообщение о недостаточности данных для входа.")
     public void testCourierLoginWithoutLoginFailure() {
-        // Создаем курьера
-        CourierModel courier = new CourierModel(
-                testCourier.getLogin(), testCourier.getPassword(), testCourier.getFirstName()
-        );
-
-        // Создаем курьера
-        courierCreate(courier)
-                .then()
-                .statusCode(HTTP_CREATED)
-                .body("ok", equalTo(true));
-
-        // Логинимся без логина
         CourierModel loginCourier = CourierModel.withPassword(testCourier.getPassword());
         courierLogin(loginCourier)
                 .then()
@@ -107,18 +72,6 @@ public class CourierLoginTest extends CourierBaseTest {
     @DisplayName("Ошибка логина курьера без пароля")
     @Description("Создание курьера и попытка входа без указания пароля. Ожидается код 400 и сообщение о недостаточности данных для входа.")
     public void testCourierLoginWithoutPasswordFailure() {
-        // Создаем курьера
-        CourierModel courier = new CourierModel(
-                testCourier.getLogin(), testCourier.getPassword(), testCourier.getFirstName()
-        );
-
-        // Создаем курьера
-        courierCreate(courier)
-                .then()
-                .statusCode(HTTP_CREATED)
-                .body("ok", equalTo(true));
-
-        // Логинимся без пароля
         CourierModel loginCourier = CourierModel.withLogin(testCourier.getLogin());
         courierLogin(loginCourier)
                 .then()
