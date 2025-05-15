@@ -1,6 +1,7 @@
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import model.OrderModel;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -11,6 +12,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static testData.testValues.*;
 
@@ -60,5 +63,14 @@ public class OrderCreateTest extends OrderBaseTest {
                 .body("track", notNullValue())
                 .extract()
                 .path("track");
+    }
+    @After
+    public void tearDown() {
+        if (track != null) {
+            OrderSteps.cancelOrder(track)
+                    .then()
+                    .statusCode(HTTP_OK)
+                    .body("ok", is(true));
+        }
     }
 }

@@ -14,14 +14,4 @@ public class OrderBaseTest {
     public static void setUpBaseUrl() {
         RestAssured.baseURI = BASE_URL;
     }
-
-    @After
-    public void tearDown() {
-        if (track != null) {
-            OrderSteps.cancelOrder(track)
-                    .then()
-                    .statusCode(HTTP_OK)
-                    .body("ok", is(true));
-        }
-    }
 }
