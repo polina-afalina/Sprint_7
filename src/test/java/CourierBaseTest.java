@@ -4,8 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import steps.CourierSteps;
-
-import static steps.CourierSteps.*;
 import static testData.testValues.*;
 
 public class CourierBaseTest {
